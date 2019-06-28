@@ -9,6 +9,7 @@ class PracticeBot(sea.GeneratorBot):
     def robotInit(self):
         #set up drivetrain
         self.drivetrain = self.initDrivetrain()
+        sea.setSimulatedDrivetrain(self.drivetrain)
 
         #set up dashboard
         self.app = None
@@ -23,9 +24,9 @@ class PracticeBot(sea.GeneratorBot):
 
         #create wheels
         frontLeft = sea.AngledWheel(ctre.WPI_TalonSRX(2), -0.75, 1.25, math.pi/2, 31527.59199, 16)
-        frontRight = sea.AngledWheel(ctre.WPI_TalonSRX(1), 0.75, 1.25, 3 * math.pi/2, 31527.59199, 16)
+        frontRight = sea.AngledWheel(ctre.WPI_TalonSRX(1), 0.75, 1.25, math.pi/2, 31527.59199, 16)
         backLeft = sea.AngledWheel(ctre.WPI_TalonSRX(0), -0.75, -1.25, math.pi/2, 31527.59199, 16)
-        backRight = sea.AngledWheel(ctre.WPI_TalonSRX(3), 0.75, -1.25, 3 * math.pi/2, 31527.59199, 16)
+        backRight = sea.AngledWheel(ctre.WPI_TalonSRX(3), 0.75, -1.25, math.pi/2, 31527.59199, 16)
 
         #add wheels to drivetrain
         drivetrain.addWheel(frontLeft)
@@ -48,7 +49,7 @@ class PracticeBot(sea.GeneratorBot):
     #dashboard callback
     @sea.queuedDashboardEvent
     def c_driveForward(self, button):
-        self.drivetrain.drive(16, math.pi/2, 2)
+        self.drivetrain.drive(16, math.pi/2, 0)
 
 if __name__ == "__main__":
     wpilib.run(PracticeBot, physics_enabled=True)
