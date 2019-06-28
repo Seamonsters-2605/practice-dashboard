@@ -45,11 +45,15 @@ class PracticeBot(sea.GeneratorBot):
             if self.app is not None:
                 v = self.app.doEvents()
             yield v
-
-    #dashboard callback
+    
+    #dashboard callbacks
     @sea.queuedDashboardEvent
     def c_driveForward(self, button):
         self.drivetrain.drive(16, math.pi/2, 0)
+
+    @sea.queuedDashboardEvent
+    def c_stop(self, button):
+        self.drivetrain.drive(0,0,0)
 
 if __name__ == "__main__":
     wpilib.run(PracticeBot, physics_enabled=True)
