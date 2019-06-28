@@ -1,16 +1,14 @@
-import seamonsters as sea
+import math
 import ctre
 import wpilib
+import seamonsters as sea
 import dashboard
 
 class PracticeBot(sea.GeneratorBot):
 
     def robotInit(self):
-        #set up motors
-        self.leftFront = ctre.WPI_TalonSRX(2)
-        self.rightFront = ctre.WPI_TalonSRX(1)
-        self.leftBack = ctre.WPI_TalonSRX(0)
-        self.rightBack = ctre.WPI_TalonSRX(3)
+        #set up drivetrain
+        self.drivetrain = self.initDrivetrain()
 
         #set up dashboard
         self.app = None
@@ -18,6 +16,24 @@ class PracticeBot(sea.GeneratorBot):
 
     def teleop(self):
         yield from self.updateDashboardGenerator()
+
+    #creates and returns the drivetrain
+    def initDrivetrain(self):
+        drivetrain = sea.SuperHolonomicDrive()
+
+        #create wheels
+        frontLeft = sea.AngledWheel(ctre.WPI_TalonSRX(2), -0.75, 1.25, math.pi/2, 31527.59199, 16)
+        frontRight = sea.AngledWheel(ctre.WPI_TalonSRX(1), 0.75, 1.25, 3 * math.pi/2, 31527.59199, 16)
+        backLeft = sea.AngledWheel(ctre.WPI_TalonSRX(0), -0.75, -1.25, math.pi/2, 31527.59199, 16)
+        backRight = sea.AngledWheel(ctre.WPI_TalonSRX(3), 0.75, -1.25, 3 * math.pi/2, 31527.59199, 16)
+
+        #add wheels to drivetrain
+        drivetrain.addWheel(frontLeft)
+        drivetrain.addWheel(frontRight)
+        drivetrain.addWheel(backLeft)
+        drivetrain.addWheel(backRight)
+
+        return drivetrain
 
     #does the events called by the dashboard
     def updateDashboardGenerator(self):
@@ -29,23 +45,10 @@ class PracticeBot(sea.GeneratorBot):
                 v = self.app.doEvents()
             yield v
 
-    def driveForward(self):
-        self.leftFront.set(1)
-        self.rightFront.set(-1)
-        self.leftBack.set(1)
-        self.rightBack.set(-1)
-        """
-        yield from sea.wait(100)
-        self.leftFront.set(0)
-        self.rightFront.set(0)
-        self.leftBack.set(0)
-        self.rightBack.set(0)
-        """
-
     #dashboard callback
     @sea.queuedDashboardEvent
     def c_driveForward(self, button):
-        self.driveForward()
+        self.drivetrain.drive(16, math.pi/2, 2)
 
 if __name__ == "__main__":
     wpilib.run(PracticeBot, physics_enabled=True)
