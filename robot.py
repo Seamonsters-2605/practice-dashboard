@@ -56,4 +56,4 @@ class PracticeBot(sea.GeneratorBot):
         self.drivetrain.drive(0,0,0)
 
 if __name__ == "__main__":
-    wpilib.run(PracticeBot, physics_enabled=True)
+    wpilib.run(PracticeBot)
