@@ -22,17 +22,19 @@ class PracticeBot(sea.GeneratorBot):
     def initDrivetrain(self):
         drivetrain = sea.SuperHolonomicDrive()
 
+        #configure talons
+        leftTalon = ctre.WPI_TalonSRX(2)
+        rightTalon = ctre.WPI_TalonSRX(1)
+        for talon in [leftTalon, rightTalon]:
+            talon.configSelectedFeedbackSensor(ctre.FeedbackDevice.QuadEncoder, 0, 0)
+
         #create wheels
-        frontLeft = sea.AngledWheel(ctre.WPI_TalonSRX(2), -0.75, 1.25, math.pi/2, 31527.59199, 16)
-        frontRight = sea.AngledWheel(ctre.WPI_TalonSRX(1), 0.75, 1.25, math.pi/2, 31527.59199, 16)
-        backLeft = sea.AngledWheel(ctre.WPI_TalonSRX(0), -0.75, -1.25, math.pi/2, 31527.59199, 16)
-        backRight = sea.AngledWheel(ctre.WPI_TalonSRX(3), 0.75, -1.25, math.pi/2, 31527.59199, 16)
+        left = sea.AngledWheel(leftTalon, -0.75, 0, math.pi/2, 31527.59199, 16)
+        right = sea.AngledWheel(rightTalon, 0.75, 0, math.pi/2, 31527.59199, 16)
 
         #add wheels to drivetrain
-        drivetrain.addWheel(frontLeft)
-        drivetrain.addWheel(frontRight)
-        drivetrain.addWheel(backLeft)
-        drivetrain.addWheel(backRight)
+        drivetrain.addWheel(left)
+        drivetrain.addWheel(right)
 
         return drivetrain
 
