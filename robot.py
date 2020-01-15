@@ -1,5 +1,5 @@
 import math
-import ctre
+import rev
 import wpilib
 import seamonsters as sea
 import dashboard
@@ -22,19 +22,21 @@ class PracticeBot(sea.GeneratorBot):
     def initDrivetrain(self):
         drivetrain = sea.SuperHolonomicDrive()
 
-        #configure talons
-        leftTalon = ctre.WPI_TalonSRX(2)
-        rightTalon = ctre.WPI_TalonSRX(1)
-        for talon in [leftTalon, rightTalon]:
-            talon.configSelectedFeedbackSensor(ctre.FeedbackDevice.QuadEncoder, 0, 0)
+        leftSpark = rev.CANSparkMax(1, rev.MotorType.kBrushless)
+        rightSpark = rev.CANSparkMax(2, rev.MotorType.kBrushless)
 
-        #create wheels
-        left = sea.AngledWheel(leftTalon, -0.75, 0, math.pi/2, 31527.59199, 16)
-        right = sea.AngledWheel(rightTalon, 0.75, 0, math.pi/2, 31527.59199, 16)
+        for spark in [leftSpark, rightSpark]:
+            spark.restoreFactoryDefaults()
+            spark.setIdleMode(rev.IdleMode.kBrake)
 
-        #add wheels to drivetrain
-        drivetrain.addWheel(left)
-        drivetrain.addWheel(right)
+        leftWheel = sea.AngledWheel(leftSpark, -1, 0, math.pi/2, 1, 16)
+        rightWheel = sea.AngledWheel(rightSpark, 1, 0, math.pi/2, 1, 16)
+
+        drivetrain.addWheel(leftWheel)
+        drivetrain.addWheel(rightWheel)
+
+        for wheel in drivetrain.wheels:
+            wheel.driveMode = rev.ControlType.kVelocity
 
         return drivetrain
 
@@ -51,7 +53,7 @@ class PracticeBot(sea.GeneratorBot):
     #dashboard callbacks
     @sea.queuedDashboardEvent
     def c_driveForward(self, button):
-        self.drivetrain.drive(16, math.pi/2, 0)
+        self.drivetrain.drive(4, math.pi/2, 0)
 
     @sea.queuedDashboardEvent
     def c_stop(self, button):
